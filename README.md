@@ -52,7 +52,7 @@ Express.js (servidor proxy para autenticación OAUTH2)
 
 📂 Estructura del proyecto
 
-roma-proyect/
+<pre> ## roma-proyect/
 ├── public/
 ├── server/
 │   ├── index.js
@@ -68,15 +68,16 @@ roma-proyect/
 │   │   ├── LoginPage.jsx
 │   │   └── MoviesPage.jsx
 │   ├── services/
-│   │   └── authService.js
-│   ├── ProtectedRoute.jsx
+│   │   ├── authService.js
 │   └── main.jsx
+|   └── ProtectedRoute.jsx
 ├── .gitignore
 ├── index.html
-├── vite.config.js
 ├── package.json
 ├── package-lock.json
+├── vite.config.js
 └── README.md
+ </pre>
 
 📊 Usuario de prueba para autenticación
 
@@ -88,9 +89,6 @@ Contraseña: Rom@shopp1ng
 🚪 Instalación y ejecución
 
 # Clona el repositorio
-https://github.com/tu-usuario/roma-movies.git
-
-cd roma-movies
 
 # Instala las dependencias
 npm install
@@ -98,28 +96,10 @@ npm install
 # Ejecuta el frontend
 npm run dev
 
-# (opcional) Ejecuta el servidor Express para login
+# Ejecuta el servidor Express para login
 cd server
 npm install
 node index.js
-
-🔧 Conectarse a una API externa
-
-Editá la constante API_URL en MoviesPage.jsx:
-
-const API_URL = "https://api.romashop.com/v1/movies";
-
-Si la API requiere token:
-
-headers: {
-  "Authorization": `Bearer ${localStorage.getItem("access_token")}`,
-  "Content-Type": "application/json"
-}
-
-Ajustá el formato de respuesta si cambia:
-
-const data = await res.json();
-setMovies(data.results || data);
 
 🧠 Conceptos aplicados
 
