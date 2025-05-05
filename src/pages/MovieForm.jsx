@@ -8,11 +8,11 @@ function MovieForm({
     onSubmit
 }) {
     return (
-        <div className="modal fade" id="addModal" tabIndex="-1" aria-hidden="true">
+        <div className="modal fade" id="addModal" tabIndex="-1" aria-labelledby="addModalLabel" aria-hidden="true">
             <div className="modal-dialog">
                 <form className="modal-content" onSubmit={onSubmit}>
                     <div className="modal-header">
-                        <h5 className="modal-title">
+                        <h5 className="modal-title" id="addModalLabel">
                             {modalMode === "add" ? "Agregar película" : "Editar película"}
                         </h5>
                         <button type="button" className="btn-close" data-bs-dismiss="modal"></button>

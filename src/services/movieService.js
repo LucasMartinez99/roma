@@ -2,15 +2,20 @@ import { secureFetch } from "../services/secureFetch";
 const API_URL = "https://cloud.romapy.com/v1/movies";
 
 export const fetchMovies = async (page = 0, size = 5) => {
-    const url = new URL(API_URL);
-    url.searchParams.append("page", page); 
-    url.searchParams.append("size", size); 
-    
-    const res = await secureFetch(url.toString());
-
-    const data = await res.json();
-    return Array.isArray(data.content) ? data.content : [];
+    try {
+        const url = new URL(API_URL);
+        url.searchParams.append("page", page); 
+        url.searchParams.append("size", size); 
+        
+        const res = await secureFetch(url.toString());
+        const data = await res.json();
+        return Array.isArray(data.content) ? data.content : [];
+    } catch (error) {
+        console.error("Error al obtener películas:", error);
+        return [];
+    }
 };
+
 
 export const fetchOptions = async () => {
     const [studioRes, producerRes] = await Promise.all([

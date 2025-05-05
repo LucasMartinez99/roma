@@ -1,4 +1,3 @@
-// src/services/pkce.js
 export function generateCodeVerifier(length = 40) {
     const characters = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
     let result = '';

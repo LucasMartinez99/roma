@@ -1,7 +1,11 @@
+/**
+ * Página Callback de OAUTH2.
+ * Recibe el authorization code y verifica el estado antes de intercambiarlo por un access token.
+ */
 import { useEffect, useRef } from "react";
 import { useNavigate } from "react-router-dom";
 import Swal from "sweetalert2";
-import { exchangeCodeForToken } from "../services/authService";
+import { exchangeCodeForToken, logout } from "../services/authService";
 
 function CallbackPage() {
     const navigate = useNavigate();
@@ -52,7 +56,9 @@ function CallbackPage() {
             })
             .catch((err) => {
                 console.error("Error intercambiando token:", err);
-                Swal.fire("Error", "No se pudo obtener el token", "error");
+                Swal.fire("Error", "No se pudo obtener el token", "error").then(() => {
+                    logout();
+                });
             });
     }, [navigate]);
 

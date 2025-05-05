@@ -75,7 +75,7 @@ export async function refreshTokenIfNeeded() {
 
     const credentials = btoa("frontweb:123456");
 
-    const response = await fetch("https://cloud.romapy.com/oauth2/token", {
+    const response = await fetch(TOKEN_URL, {
         method: "POST",
         headers: {
             "Content-Type": "application/x-www-form-urlencoded",

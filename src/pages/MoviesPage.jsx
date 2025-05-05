@@ -29,7 +29,7 @@ function MoviesPage() {
     };
 
     const loadMovies = async () => {
-        
+
         try {
             const data = await fetchMovies(page, size);
             setMovies(data);
@@ -118,7 +118,7 @@ function MoviesPage() {
         try {
             await saveMovie(formData, modalMode, editId);
             Swal.fire("Éxito", `Película ${modalMode === "add" ? "creada" : "actualizada"}`, "success");
-            
+
             loadMovies();
         } catch (err) {
             Swal.fire("Error", err.message, "error");
@@ -127,11 +127,13 @@ function MoviesPage() {
 
     return (
         <div className="container mt-4">
-            <h2 className="mb-12">🎬 Lista de Películas <button className="btn btn-outline-danger" onClick={handleLogout}>
-                🔒 Cerrar sesión
-            </button>
+            <h2 className="mb-12">🎬 Lista de Películas</h2>
+            <div className="mb-3 d-flex justify-content-between">
+                <button className="btn btn-outline-danger" onClick={handleLogout}>
+                    🔒 Cerrar sesión
+                </button>
                 <button
-                    className="btn btn-primary ms-3"
+                    className="btn btn-primary"
                     data-bs-toggle="modal"
                     data-bs-target="#addModal"
                     onClick={() => {
@@ -141,7 +143,8 @@ function MoviesPage() {
                 >
                     ➕ Agregar nueva
                 </button>
-            </h2>
+            </div>
+
 
             <table className="table table-striped table-hover">
                 <thead className="table-dark">
