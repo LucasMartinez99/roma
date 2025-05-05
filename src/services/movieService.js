@@ -5,7 +5,7 @@ export const fetchMovies = async (page = 0, size = 5) => {
     const url = new URL(API_URL);
     url.searchParams.append("page", page); 
     url.searchParams.append("size", size); 
-
+    
     const res = await secureFetch(url.toString());
 
     const data = await res.json();
@@ -48,10 +48,7 @@ export const saveMovie = async (data, mode = "add", id = null) => {
             "Content-Type": "application/json"
         },
         body: JSON.stringify(payload),
-    });
-
-    console.log(res);
-    
+    });   
 
     if (!res.ok) {
         const error = await res.json();

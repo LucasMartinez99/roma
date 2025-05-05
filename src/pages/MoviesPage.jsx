@@ -1,6 +1,5 @@
 import { useState, useEffect } from "react";
 import Swal from 'sweetalert2';
-import { useNavigate } from "react-router-dom";
 import { logout } from "../services/authService";
 import MovieForm from "./MovieForm";
 import {
@@ -9,7 +8,6 @@ import {
     deleteMovie,
     saveMovie
 } from "../services/movieService";
-
 
 function MoviesPage() {
     const [movies, setMovies] = useState([]);
@@ -23,7 +21,6 @@ function MoviesPage() {
     const [modalMode, setModalMode] = useState("add");
     const [page, setPage] = useState(0);
     const size = 10;
-    const navigate = useNavigate();
     const [studios, setStudios] = useState([]);
     const [producers, setProducers] = useState([]);
 
@@ -32,6 +29,7 @@ function MoviesPage() {
     };
 
     const loadMovies = async () => {
+        
         try {
             const data = await fetchMovies(page, size);
             setMovies(data);
@@ -54,10 +52,9 @@ function MoviesPage() {
     useEffect(() => {
         const token = localStorage.getItem("access_token");
         if (!token) {
-            navigate("/");
+            logout();
             return;
         }
-
         loadMovies();
         loadOptions();
 

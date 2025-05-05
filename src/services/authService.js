@@ -11,7 +11,6 @@ export async function redirectToLogin() {
     const codeChallenge = await generateCodeChallenge(codeVerifier);
     const state = crypto.randomUUID();
 
-    // Guardar valores necesarios
     localStorage.setItem("pkce_verifier", codeVerifier);
     localStorage.setItem("pkce_state", state);
 
@@ -49,7 +48,7 @@ export async function exchangeCodeForToken(code, codeVerifier) {
         localStorage.setItem("access_token", data.access_token);
         localStorage.setItem("refresh_token", data.refresh_token);
 
-        const expiresIn = data.expires_in; // por ejemplo 3599 segundos
+        const expiresIn = data.expires_in;
         const expirationTime = Date.now() + expiresIn * 1000;
         localStorage.setItem("token_expiration", expirationTime.toString());
         return data;
@@ -61,6 +60,7 @@ export async function exchangeCodeForToken(code, codeVerifier) {
 }
 
 export async function refreshTokenIfNeeded() {
+    
     const expiration = parseInt(localStorage.getItem("token_expiration"), 10);
     const now = Date.now();
 
@@ -110,7 +110,6 @@ export function logout() {
     localStorage.removeItem("pkce_verifier");
     localStorage.removeItem("pkce_state");
 
-    // Mensaje antes de redirigir
     setTimeout(() => {
         window.location.href = "/";
     }, 1500);

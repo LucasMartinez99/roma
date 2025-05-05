@@ -1,8 +1,13 @@
 // src/services/pkce.js
-export function generateCodeVerifier(length = 128) {
+export function generateCodeVerifier(length = 40) {
+    const characters = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
+    let result = '';
     const array = new Uint8Array(length);
     window.crypto.getRandomValues(array);
-    return Array.from(array, b => ('0' + b.toString(16)).slice(-2)).join('');
+    for (let i = 0; i < length; i++) {
+        result += characters.charAt(array[i] % characters.length);
+    }
+    return result;
 }
 
 export async function generateCodeChallenge(codeVerifier) {
