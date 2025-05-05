@@ -1,63 +1,50 @@
-🎥 Movies Admin - Prueba Frontend Roma Shop
+# 🎥 Movies Admin - Prueba Frontend Roma Shop
 
-Este proyecto es una aplicación frontend construida con React + Vite que consume una API REST para gestionar un listado de películas. Incluye autenticación OAUTH2, sistema CRUD completo (crear, leer, editar y eliminar) y una interfaz moderna basada en Bootstrap 5 y SweetAlert2.
+Este proyecto es una aplicación web construida con **React + Vite** que consume una **API REST protegida con OAUTH2**. Permite al usuario autenticarse, gestionar un listado de películas (crear, leer, editar y eliminar), y navegar entre páginas de resultados. La interfaz está diseñada con **Bootstrap 5** y utiliza **SweetAlert2** para una experiencia visual más amigable.
 
-✅ Funcionalidades principales
+---
 
-🔐 Autenticación OAUTH2
+## ✅ Funcionalidades principales
 
-Login manual mediante fetch sin librerías externas.
+### 🔐 Autenticación OAUTH2 (con PKCE)
 
-Almacena el access_token en localStorage.
+* Login implementado **manualmente con `fetch`**, sin usar bibliotecas externas.
+* Implementación completa de **PKCE** con `code_verifier` y `code_challenge`.
+* Almacenamiento de `access_token` y `refresh_token` en `localStorage`.
+* Verificación automática del token y renovación con `refresh_token`.
+* Protección de rutas mediante componente `ProtectedRoute`.
 
-Protege las rutas privadas.
+### 🎬 CRUD de películas
 
-Backend Express incluido como proxy local para evitar errores de CORS.
+* Listado paginado de películas conectadas a la API real.
+* Creación, edición y eliminación desde un formulario modal.
+* Asociaciones con estudios y productores ya existentes.
+* Confirmación visual antes de eliminar una película.
 
-🎥 CRUD de películas
+### 🎨 Interfaz moderna y responsiva
 
-Listado paginado de películas.
+* UI desarrollada con **Bootstrap 5**.
+* Alertas y diálogos amigables con **SweetAlert2**.
+* Indicadores de carga al iniciar sesión.
+* Compatible con dispositivos móviles y escritorio.
 
-Filtro por título en tiempo real.
+---
 
-Crear nueva película desde un modal Bootstrap.
+## 🚀 Tecnologías utilizadas
 
-Edición inline de los campos.
+* [React](https://reactjs.org/)
+* [Vite](https://vitejs.dev/)
+* [Bootstrap 5](https://getbootstrap.com/)
+* [SweetAlert2](https://sweetalert2.github.io/)
+* [Fetch API](https://developer.mozilla.org/en-US/docs/Web/API/Fetch_API)
 
-Eliminación con confirmación visual.
+---
 
-🎨 Interfaz moderna
+## 📂 Estructura del proyecto
 
-Interfaz responsiva con Bootstrap 5.
-
-Feedback amigable con SweetAlert2.
-
-Botón de Cerrar sesión.
-
-Indicador visual de carga al iniciar sesión.
-
-🚀 Tecnologías utilizadas
-
-React
-
-Vite
-
-Bootstrap 5
-
-SweetAlert2
-
-MockAPI (simulación de backend)
-
-Express.js (servidor proxy para autenticación OAUTH2)
-
-📂 Estructura del proyecto
-
-<pre> ## roma-proyect/
+```
+roma-proyect/
 ├── public/
-├── server/
-│   ├── index.js
-│   ├── package.json
-│   └── package-lock.json
 ├── src/
 │   ├── assets/
 │   │   ├── css/
@@ -66,55 +53,54 @@ Express.js (servidor proxy para autenticación OAUTH2)
 │   │       └── image.png
 │   ├── pages/
 │   │   ├── LoginPage.jsx
-│   │   └── MoviesPage.jsx
+│   │   ├── CallbackPage.jsx
+│   │   ├── MoviesPage.jsx
+│   │   └── MovieForm.jsx
 │   ├── services/
 │   │   ├── authService.js
+│   │   ├── movieService.js
+│   │   ├── pkce.js
+│   │   └── secureFetch.js
+│   ├── ProtectedRoute.jsx
 │   └── main.jsx
-|   └── ProtectedRoute.jsx
-├── .gitignore
 ├── index.html
-├── package.json
-├── package-lock.json
 ├── vite.config.js
+├── package.json
 └── README.md
- </pre>
+```
 
-📊 Usuario de prueba para autenticación
+## 🛠️ Instalación y ejecución local
 
-Puedes usar el siguiente usuario para probar el sistema:
+```bash
+# 1. Clona el repositorio
+git clone https://github.com/LucasMartinez99/roma.git
+cd roma
 
-Usuario: roma@gmail.com
-Contraseña: Rom@shopp1ng
-
-🚪 Instalación y ejecución
-
-# Clona el repositorio
-
-# Instala las dependencias
+# 2. Instala las dependencias
 npm install
 
-# Ejecuta el frontend
+# 3. Ejecuta el frontend
 npm run dev
+```
 
-# Ejecuta el servidor Express para login
-cd server
-npm install
-node index.js
+Asegúrate de que tu navegador permita redirecciones desde `http://localhost:3000/callback`.
 
-🧠 Conceptos aplicados
+---
 
-Arquitectura cliente-servidor (frontend + API REST)
+## 🧠 Conceptos aplicados
 
-Manejo de estado con useState
+* Arquitectura cliente-API (frontend consumiendo endpoints externos)
+* Autenticación OAUTH2 con PKCE
+* Uso de `fetch` y control de tokens con `access_token` y `refresh_token`
+* Paginación
+* Modularización de código (servicios, componentes y vistas)
+* UI responsiva sin frameworks pesados
+* Seguridad en el manejo de sesión
 
-Efectos secundarios con useEffect
+---
 
-Modularización del código (servicios + vistas)
+## 👨‍💼 Autor
 
-Autenticación segura
+Desarrollado por **Ing. Lucas Martínez** como parte de la prueba técnica para **Roma Shop**.
 
-UI profesional sin librerías pesadas
-
-👨‍💻 Autor
-
-Desarrollado por Ing. Lucas Martínez como parte de la prueba técnica para Roma Shop.
+📌 GitHub: [@LucasMartinez99](https://github.com/LucasMartinez99)
