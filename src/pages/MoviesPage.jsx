@@ -1,50 +1,67 @@
 import { useState, useEffect } from "react";
 import Swal from 'sweetalert2';
 import { useNavigate } from "react-router-dom";
+import { logout } from "../services/authService";
+import MovieForm from "./MovieForm";
+import {
+    fetchMovies,
+    fetchOptions,
+    deleteMovie,
+    saveMovie
+} from "../services/movieService";
+
 
 function MoviesPage() {
     const [movies, setMovies] = useState([]);
-    const [search, setSearch] = useState("");
-    const [page, setPage] = useState(1);
     const [editId, setEditId] = useState(null);
-    const [editData, setEditData] = useState({});
-    const [newMovie, setNewMovie] = useState({ title: "", studio: "", producer: "", year: "" });
-    const limit = 5;
+    const [formData, setFormData] = useState({
+        name: "",
+        studios: [],
+        producers: []
+    });
+
+    const [modalMode, setModalMode] = useState("add");
+    const [page, setPage] = useState(0);
+    const size = 10;
     const navigate = useNavigate();
+    const [studios, setStudios] = useState([]);
+    const [producers, setProducers] = useState([]);
 
     const handleLogout = () => {
-        localStorage.removeItem("access_token");
-        Swal.fire({
-            title: "Sesión cerrada",
-            text: "Hasta pronto",
-            icon: "info",
-            timer: 1500,
-            showConfirmButton: false
-        });
-        navigate("/");
+        logout();
     };
 
-    const API_URL = "https://68121d5b3ac96f7119a6e2ce.mockapi.io/api/v1/movies";
-
-    const fetchMovies = async () => {
+    const loadMovies = async () => {
         try {
-            const url = new URL(API_URL);
-            url.searchParams.append("page", page);
-            url.searchParams.append("limit", limit);
-            if (search.trim()) url.searchParams.append("title", search);
-            const res = await fetch(url);
-            const data = await res.json();
-            setMovies(Array.isArray(data) ? data : []);
+            const data = await fetchMovies(page, size);
+            setMovies(data);
         } catch (err) {
-            console.error("Error:", err);
+            console.error("Error cargando películas:", err);
         }
     };
 
-    useEffect(() => {
-        fetchMovies();
-    }, [search, page]);
+    const loadOptions = async () => {
+        try {
+            const { studios, producers } = await fetchOptions();
+            setStudios(studios);
+            setProducers(producers);
+        } catch (err) {
+            console.error("Error cargando opciones:", err);
+        }
 
-    const handleSearchChange = (e) => setSearch(e.target.value);
+    };
+
+    useEffect(() => {
+        const token = localStorage.getItem("access_token");
+        if (!token) {
+            navigate("/");
+            return;
+        }
+
+        loadMovies();
+        loadOptions();
+
+    }, [page]);
 
     const handleDelete = async (id) => {
         const result = await Swal.fire({
@@ -57,90 +74,77 @@ function MoviesPage() {
         });
 
         if (result.isConfirmed) {
-            await fetch(`${API_URL}/${id}`, { method: "DELETE" });
-            fetchMovies();
-            Swal.fire("Eliminado", "La película fue eliminada", "success");
+            const ok = await deleteMovie(id);
+
+            if (ok) {
+                await loadMovies();
+                Swal.fire("Eliminado", "La película fue eliminada", "success");
+            } else {
+                Swal.fire("Error", "No se pudo eliminar la película", "error");
+            }
         }
     };
 
-
-    const handleEdit = (movie) => {
+    const handleEdit = async (movie) => {
+        setModalMode("edit");
         setEditId(movie.id);
-        setEditData(movie);
-    };
 
-    const handleEditChange = (e) => {
-        const { name, value } = e.target;
-        setEditData({ ...editData, [name]: value });
-    };
+        const { studios, producers } = await fetchOptions();
 
-    const handleSave = async () => {
-        const res = await fetch(`${API_URL}/${editId}`, {
-            method: "PUT",
-            headers: { "Content-Type": "application/json" },
-            body: JSON.stringify(editData)
+        setStudios(studios);
+        setProducers(producers);
+
+        setFormData({
+            name: movie.name,
+            studios: movie.studios.map((s) => s.id),
+            producers: movie.producers.map((p) => p.id),
         });
 
-        if (!res.ok) {
-            const error = await res.json();
-            Swal.fire("Error", error.message, "error");
-            return;
+    };
+
+    const handleFormChange = (e) => {
+        const { name, options, multiple, value } = e.target;
+
+        if (multiple) {
+            const values = Array.from(options)
+                .filter((o) => o.selected)
+                .map((o) => o.value);
+
+            setFormData((prev) => ({ ...prev, [name]: values }));
+        } else {
+            setFormData((prev) => ({ ...prev, [name]: value }));
         }
-        Swal.fire("Éxito", "Película actualizada", "success");
-        setEditId(null);
-        fetchMovies();
     };
 
-    const handleNewMovieChange = (e) => {
-        const { name, value } = e.target;
-        setNewMovie({ ...newMovie, [name]: value });
-    };
-
-    const handleCreateMovie = async (e) => {
+    const handleSubmit = async (e) => {
         e.preventDefault();
-        const res = await fetch(API_URL, {
-            method: "POST",
-            headers: { "Content-Type": "application/json" },
-            body: JSON.stringify(newMovie)
-        });
-
-        if (!res.ok) {
-            const error = await res.json();
-            Swal.fire("Error", error.message, "error");
-            return;
+        try {
+            await saveMovie(formData, modalMode, editId);
+            Swal.fire("Éxito", `Película ${modalMode === "add" ? "creada" : "actualizada"}`, "success");
+            
+            loadMovies();
+        } catch (err) {
+            Swal.fire("Error", err.message, "error");
         }
-
-        Swal.fire("Éxito", "Película creada", "success");
-        setNewMovie({ title: "", studio: "", producer: "", year: "" });
-        const modal = bootstrap.Modal.getInstance(document.getElementById("addModal"));
-
-        modal.hide();
-        fetchMovies();
     };
 
     return (
         <div className="container mt-4">
             <h2 className="mb-12">🎬 Lista de Películas <button className="btn btn-outline-danger" onClick={handleLogout}>
                 🔒 Cerrar sesión
-            </button></h2>
-
-
-            <div className="d-flex justify-content-between align-items-center mb-3">
-                <input
-                    type="text"
-                    className="form-control w-50"
-                    placeholder="Buscar por título"
-                    value={search}
-                    onChange={handleSearchChange}
-                />
+            </button>
                 <button
                     className="btn btn-primary ms-3"
                     data-bs-toggle="modal"
                     data-bs-target="#addModal"
+                    onClick={() => {
+                        setModalMode("add");
+                        setFormData({ name: "", studios: [], producers: [] });
+                    }}
                 >
                     ➕ Agregar nueva
                 </button>
-            </div>
+            </h2>
 
             <table className="table table-striped table-hover">
                 <thead className="table-dark">
@@ -154,60 +158,46 @@ function MoviesPage() {
                 </thead>
                 <tbody>
                     {movies.map((movie) =>
-                        editId === movie.id ? (
-                            <tr key={movie.id}>
-                                <td><input className="form-control" name="title" value={editData.title} onChange={handleEditChange} /></td>
-                                <td><input className="form-control" name="studio" value={editData.studio} onChange={handleEditChange} /></td>
-                                <td><input className="form-control" name="producer" value={editData.producer} onChange={handleEditChange} /></td>
-                                <td><input className="form-control" name="year" type="number" value={editData.year} onChange={handleEditChange} /></td>
-                                <td>
-                                    <button className="btn btn-success btn-sm me-1" onClick={handleSave}>Guardar</button>
-                                    <button className="btn btn-secondary btn-sm" onClick={() => setEditId(null)}>Cancelar</button>
-                                </td>
-                            </tr>
-                        ) : (
-                            <tr key={movie.id}>
-                                <td>{movie.title}</td>
-                                <td>{movie.studio}</td>
-                                <td>{movie.producer}</td>
-                                <td>{movie.year}</td>
-                                <td>
-                                    <button className="btn btn-warning btn-sm me-1" onClick={() => handleEdit(movie)}>✏️</button>
-                                    <button className="btn btn-danger btn-sm" onClick={() => handleDelete(movie.id)}>🗑</button>
-                                </td>
-                            </tr>
-                        )
+
+                        <tr key={movie.id}>
+                            <td>{movie.name}</td>
+                            <td>{movie.studios?.[0]?.name || "-"}</td>
+                            <td>{movie.producers?.[0]?.name || "-"}</td>
+                            <td>{new Date(movie.createdAt).getFullYear()}</td>
+
+                            <td>
+                                <button
+                                    className="btn btn-warning btn-sm me-1"
+                                    data-bs-toggle="modal"
+                                    data-bs-target="#addModal"
+                                    onClick={() => handleEdit(movie)}
+                                >
+                                    ✏️
+                                </button>
+                                <button className="btn btn-danger btn-sm" onClick={() => handleDelete(movie.id)}>🗑</button>
+                            </td>
+                        </tr>
+
                     )}
                 </tbody>
             </table>
 
             <div className="d-flex justify-content-center">
-                <button className="btn btn-outline-primary me-2" disabled={page === 1} onClick={() => setPage(page - 1)}>←</button>
+                <button className="btn btn-outline-primary me-2" disabled={page === 0} onClick={() => setPage(page - 1)}>←</button>
                 <span className="align-self-center">Página {page}</span>
-                <button className="btn btn-outline-primary ms-2" disabled={movies.length < limit} onClick={() => setPage(page + 1)}>→</button>
+                <button className="btn btn-outline-primary ms-2" disabled={movies.length < size} onClick={() => setPage(page + 1)}>→</button>
             </div>
 
-            {/* Modal Bootstrap para agregar */}
-            <div className="modal fade" id="addModal" tabIndex="-1" aria-hidden="true">
-                <div className="modal-dialog">
-                    <form className="modal-content" onSubmit={handleCreateMovie}>
-                        <div className="modal-header">
-                            <h5 className="modal-title">Agregar película</h5>
-                            <button type="button" className="btn-close" data-bs-dismiss="modal"></button>
-                        </div>
-                        <div className="modal-body">
-                            <input className="form-control mb-2" name="title" placeholder="Título" value={newMovie.title} onChange={handleNewMovieChange} required />
-                            <input className="form-control mb-2" name="studio" placeholder="Estudio" value={newMovie.studio} onChange={handleNewMovieChange} required />
-                            <input className="form-control mb-2" name="producer" placeholder="Productor" value={newMovie.producer} onChange={handleNewMovieChange} required />
-                            <input className="form-control" type="number" name="year" placeholder="Año" value={newMovie.year} onChange={handleNewMovieChange} required />
-                        </div>
-                        <div className="modal-footer">
-                            <button type="button" className="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
-                            <button type="submit" className="btn btn-primary">Guardar</button>
-                        </div>
-                    </form>
-                </div>
-            </div>
+            <MovieForm
+                modalMode={modalMode}
+                formData={formData}
+                studios={studios}
+                producers={producers}
+                onChange={handleFormChange}
+                onSubmit={handleSubmit}
+            />
+
+
         </div>
     );
 }
