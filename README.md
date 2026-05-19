@@ -101,6 +101,6 @@ Asegúrate de que tu navegador permita redirecciones desde `http://localhost:300
 
 ## 👨‍💼 Autor
 
-Desarrollado por **Ing. Lucas Martínez** como parte de la prueba técnica para **Roma Shop**.
+Desarrollado por **Ing. Lucas Martínez**.
 
 📌 GitHub: [@LucasMartinez99](https://github.com/LucasMartinez99)
