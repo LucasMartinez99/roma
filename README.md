@@ -1,49 +1,44 @@
-# 🎥 Movies Admin - Prueba Frontend Roma Shop
+# 🎥 Movies Admin
 
-Este proyecto es una aplicación web construida con **React + Vite** que consume una **API REST protegida con OAUTH2**. Permite al usuario autenticarse, gestionar un listado de películas (crear, leer, editar y eliminar), y navegar entre páginas de resultados. La interfaz está diseñada con **Bootstrap 5** y utiliza **SweetAlert2** para una experiencia visual más amigable.
-
----
-
-## ✅ Funcionalidades principales
-
-### 🔐 Autenticación OAUTH2 (con PKCE)
-
-* Login implementado **manualmente con `fetch`**, sin usar bibliotecas externas.
-* Implementación completa de **PKCE** con `code_verifier` y `code_challenge`.
-* Almacenamiento de `access_token` y `refresh_token` en `localStorage`.
-* Verificación automática del token y renovación con `refresh_token`.
-* Protección de rutas mediante componente `ProtectedRoute`.
-
-### 🎬 CRUD de películas
-
-* Listado paginado de películas conectadas a la API real.
-* Creación, edición y eliminación desde un formulario modal.
-* Asociaciones con estudios y productores ya existentes.
-* Confirmación visual antes de eliminar una película.
-
-### 🎨 Interfaz moderna y responsiva
-
-* UI desarrollada con **Bootstrap 5**.
-* Alertas y diálogos amigables con **SweetAlert2**.
-* Indicadores de carga al iniciar sesión.
-* Compatible con dispositivos móviles y escritorio.
+A React + Vite frontend application that consumes a **REST API protected with OAuth2**. Built as a technical assessment, it demonstrates authentication with PKCE, full CRUD operations, and paginated data management.
 
 ---
 
-## 🚀 Tecnologías utilizadas
+## ✅ Features
 
-* [React](https://reactjs.org/)
-* [Vite](https://vitejs.dev/)
-* [Bootstrap 5](https://getbootstrap.com/)
-* [SweetAlert2](https://sweetalert2.github.io/)
-* [Fetch API](https://developer.mozilla.org/en-US/docs/Web/API/Fetch_API)
+### 🔐 OAuth2 Authentication (with PKCE)
+- Login implemented manually with `fetch` — no third-party auth libraries
+- Full PKCE implementation with `code_verifier` and `code_challenge`
+- `access_token` and `refresh_token` stored and managed in `localStorage`
+- Automatic token verification and silent refresh via `refresh_token`
+- Route protection via `ProtectedRoute` component
+
+### 🎬 Movies CRUD
+- Paginated movie listing connected to the real API
+- Create, edit, and delete via modal form
+- Associations with existing studios and producers
+- Confirmation dialog before deletion
+
+### 🎨 UI
+- Bootstrap 5 — responsive across mobile and desktop
+- SweetAlert2 for user feedback and dialogs
+- Loading indicators on login
 
 ---
 
-## 📂 Estructura del proyecto
+## 🚀 Tech Stack
+
+- [React](https://reactjs.org/) + [Vite](https://vitejs.dev/)
+- [Bootstrap 5](https://getbootstrap.com/)
+- [SweetAlert2](https://sweetalert2.github.io/)
+- [Fetch API](https://developer.mozilla.org/en-US/docs/Web/API/Fetch_API)
+
+---
+
+## 📂 Project structure
 
 ```
-roma-proyect/
+roma-project/
 ├── public/
 ├── src/
 │   ├── assets/
@@ -69,38 +64,40 @@ roma-proyect/
 └── README.md
 ```
 
-## 🛠️ Instalación y ejecución local
+---
+
+## 🛠️ Local setup
 
 ```bash
-# 1. Clona el repositorio
+# 1. Clone the repository
 git clone https://github.com/LucasMartinez99/roma.git
 cd roma
 
-# 2. Instala las dependencias
+# 2. Install dependencies
 npm install
 
-# 3. Ejecuta el frontend
+# 3. Start the dev server
 npm run dev
 ```
 
-Asegúrate de que tu navegador permita redirecciones desde `http://localhost:3000/callback`.
+Make sure your browser allows redirects from `http://localhost:3000/callback`.
 
 ---
 
-## 🧠 Conceptos aplicados
+## 🧠 Concepts applied
 
-* Arquitectura cliente-API (frontend consumiendo endpoints externos)
-* Autenticación OAUTH2 con PKCE
-* Uso de `fetch` y control de tokens con `access_token` y `refresh_token`
-* Paginación
-* Modularización de código (servicios, componentes y vistas)
-* UI responsiva sin frameworks pesados
-* Seguridad en el manejo de sesión
+- Client-API architecture (frontend consuming external endpoints)
+- OAuth2 with PKCE — implemented from scratch without libraries
+- Token lifecycle management (`access_token` + `refresh_token`)
+- Pagination
+- Code modularization (services, components, views)
+- Responsive UI
+- Secure session handling
 
 ---
 
-## 👨‍💼 Autor
+## 👨‍💼 Author
 
-Desarrollado por **Ing. Lucas Martínez**.
-
+**Lucas Martínez**
 📌 GitHub: [@LucasMartinez99](https://github.com/LucasMartinez99)
+🔗 LinkedIn: [lucas-software-engineer](https://www.linkedin.com/in/lucas-software-engineer/)
